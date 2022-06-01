@@ -1,5 +1,3 @@
-using Fluent.LibreTranslate.Models;
-
 namespace Fluent.LibreTranslate.Test;
 
 public class Tests

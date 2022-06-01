@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fluent.LibreTranslate.Models;
+namespace Fluent.LibreTranslate;
 
 public class LibreTranslateServer
 {
     private static readonly Dictionary<string, LibreTranslateServer> Instance = new();
     internal readonly string Url;
-    
+
     internal LibreTranslateServer(string url)
     {
         Url = url;

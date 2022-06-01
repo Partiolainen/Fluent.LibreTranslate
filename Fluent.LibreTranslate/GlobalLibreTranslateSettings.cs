@@ -1,6 +1,4 @@
-﻿using Fluent.LibreTranslate.Models;
-
-namespace Fluent.LibreTranslate;
+﻿namespace Fluent.LibreTranslate;
 
 public static class GlobalLibreTranslateSettings
 {

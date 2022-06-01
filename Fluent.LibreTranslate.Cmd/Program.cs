@@ -1,6 +1,4 @@
-﻿using Fluent.LibreTranslate.Models;
-
-namespace Fluent.LibreTranslate.Cmd;
+﻿namespace Fluent.LibreTranslate.Cmd;
 
 internal class Program
 {

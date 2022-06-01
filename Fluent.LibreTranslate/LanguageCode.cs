@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Fluent.LibreTranslate.Models;
+namespace Fluent.LibreTranslate;
 
 public class LanguageCode
 {
