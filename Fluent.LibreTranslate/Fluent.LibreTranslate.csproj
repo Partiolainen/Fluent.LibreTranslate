@@ -4,7 +4,25 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <Nullable>disable</Nullable>
     <LangVersion>latest</LangVersion>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Description>Fluent sync/async translation via LibreTranslate</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/Partiolainen/Fluent.LibreTranslate</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/Partiolainen/Fluent.LibreTranslate</RepositoryUrl>
+    <PackageTags>Translate LibreTranslate fluent translate opentranslate</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AssemblyVersion>1.0.0.1</AssemblyVersion>
+    <FileVersion>$(AssemblyVersion)</FileVersion>
+    <Version>$(AssemblyVersion)</Version>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Flurl" Version="3.0.6" />
