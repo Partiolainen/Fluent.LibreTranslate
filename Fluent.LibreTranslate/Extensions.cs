@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fluent.LibreTranslate.Models;
@@ -13,8 +14,15 @@ public static class Extensions
         .SetQueryParam("q", text)
         .SetQueryParam("api_key", GlobalLibreTranslateSettings.ApiKey);
 
+    private static async Task SlowDown()
+    {
+        if (GlobalLibreTranslateSettings.UseRateLimitControl)
+            await GlobalLibreTranslateSettings.SlowDownLocker.WaitAsync(TimeSpan.FromSeconds(4));
+    }
+
     public static async Task<LanguageCode> DetectLanguageAsync(this string text)
     {
+        await SlowDown();
         var detect = await text.BaseUrl()
             .AppendPathSegment("detect")
             .PostAsync()
@@ -31,6 +39,7 @@ public static class Extensions
     /// <returns>Translated text</returns>
     public static async Task<string> TranslateAsync(this string text, LanguageCode source, LanguageCode target)
     {
+        await SlowDown();
         var translate = await text.BaseUrl()
             .AppendPathSegment("translate")
             .SetQueryParam("source", source)

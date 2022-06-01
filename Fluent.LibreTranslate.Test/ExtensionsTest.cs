@@ -7,11 +7,14 @@ public class Tests
     {
         GlobalLibreTranslateSettings.Server = LibreTranslateServer.Libretranslate_de;
         GlobalLibreTranslateSettings.ApiKey = null;
+        GlobalLibreTranslateSettings.UseRateLimitControl = true;
     }
 
     private const string _englishText = "Hello World!";
     private const string _finnishText = "Hei maailma!";
     private const string _fooLanguage = "foo";
+    private const int _slowDownTestIterations = 20; //15 requests per minute
+
 
     [Test]
     public async Task TestDetectionAsync()
@@ -65,5 +68,15 @@ public class Tests
         var exception = Assert.Throws<ArgumentException>(() => _englishText.Translate(_fooLanguage));
         Assert.That(exception, Is.Not.Null);
         Assert.That(exception.Message, Is.Not.Empty);
+    }
+
+    [Test]
+    public void SlowDownTest()
+    {
+        for (int i = 0; i < _slowDownTestIterations; i++)
+        {
+            TestAutoTranslation();
+            TestContext.Progress.WriteLine($"SlowDownTest progress: {(i + 1m) / _slowDownTestIterations:P0}");
+        }
     }
 }
