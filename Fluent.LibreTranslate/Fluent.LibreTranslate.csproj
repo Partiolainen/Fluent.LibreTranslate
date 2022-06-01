@@ -15,6 +15,7 @@
     <AssemblyVersion>1.0.0.1</AssemblyVersion>
     <FileVersion>$(AssemblyVersion)</FileVersion>
     <Version>$(AssemblyVersion)</Version>
+    <Authors>Partiolainen</Authors>
   </PropertyGroup>
 
   <ItemGroup>
