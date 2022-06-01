@@ -3,7 +3,7 @@
 ## C# Fluent sync/async translation via LibreTranslate
 [![NuGet](https://img.shields.io/nuget/v/Fluent.LibreTranslate.svg)](https://www.nuget.org/packages/Fluent.LibreTranslate/)
 ### Installation
-`Install-Package Fluent.LibreTranslate -Version 1.0.0.1`
+`dotnet add package Fluent.LibreTranslate`
 ### Using
 ```csharp
 using LibreTranslate.Net;
@@ -11,6 +11,7 @@ using LibreTranslate.Net;
 ### Usage
 ```csharp
 GlobalLibreTranslateSettings.Server = LibreTranslateServer.Libretranslate_de;
+GlobalLibreTranslateSettings.UseRateLimitControl = true; //to avoid "429 Too Many Requests" exception
 
 Console.WriteLine(await "Hello, World!".TranslateAsync(LanguageCode.Finnish));
 ```
