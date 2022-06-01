@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace Fluent.LibreTranslate.Test;
 
 public class Tests
@@ -71,12 +73,42 @@ public class Tests
     }
 
     [Test]
-    public void SlowDownTest()
+    public async Task SlowDownTest()
     {
-        for (int i = 0; i < _slowDownTestIterations; i++)
+        var watch = Stopwatch.StartNew();
+        var random = new Random();
+        for (var i = 0; i < _slowDownTestIterations; i++)
         {
-            TestAutoTranslation();
-            TestContext.Progress.WriteLine($"SlowDownTest progress: {(i + 1m) / _slowDownTestIterations:P0}");
+            var delay = random.Next(2000);
+            await Task.Delay(delay);
+            watch.Reset();
+            watch.Start();
+            await TestAutoTranslationAsync();
+            watch.Stop();
+            await TestContext.Progress.WriteLineAsync(
+                $"SlowDownTest progress: {(i + 1m) / _slowDownTestIterations:P0};" +
+                $" delay {delay / 1000m:f1}s; translation time: {watch.Elapsed.Milliseconds / 1000m:f2}");
         }
+    }
+
+    [Test]
+    public void ParallelTest()
+    {
+        var taskList = new List<Action>();
+        for (var i = 0; i < _slowDownTestIterations; i++)
+        {
+            var i1 = i;
+            taskList.Add((() =>
+            {
+                var watch = Stopwatch.StartNew();
+                TestContext.Progress.WriteLine($"Running instanse #{i1}");
+                watch.Start();
+                TestAutoTranslation();
+                watch.Stop();
+                TestContext.Progress.WriteLine($"Instanse #{i1} completed after {watch.Elapsed.Seconds}s");
+            }));
+        }
+
+        Parallel.Invoke(new ParallelOptions { MaxDegreeOfParallelism = _slowDownTestIterations }, taskList.ToArray());
     }
 }

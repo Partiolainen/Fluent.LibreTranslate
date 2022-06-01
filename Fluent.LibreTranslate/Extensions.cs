@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Fluent.LibreTranslate.Models;
@@ -17,17 +16,34 @@ public static class Extensions
     private static async Task SlowDown()
     {
         if (GlobalLibreTranslateSettings.UseRateLimitControl)
-            await GlobalLibreTranslateSettings.SlowDownLocker.WaitAsync(TimeSpan.FromSeconds(4));
+            await GlobalLibreTranslateSettings.SlowDownLocker.WaitAsync();
+    }
+
+    private static void SlowDownRelease()
+    {
+        if (GlobalLibreTranslateSettings.UseRateLimitControl)
+            _ = Task.Run(async () =>
+            {
+                await Task.Delay(4000);
+                GlobalLibreTranslateSettings.SlowDownLocker.Release();
+            });
     }
 
     public static async Task<LanguageCode> DetectLanguageAsync(this string text)
     {
-        await SlowDown();
-        var detect = await text.BaseUrl()
-            .AppendPathSegment("detect")
-            .PostAsync()
-            .ReceiveJson<IEnumerable<DetectLanguageResponse>>();
-        return detect.OrderByDescending(x => x.Confidence).Select(x => x.Language).FirstOrDefault();
+        try
+        {
+            await SlowDown();
+            var detect = await text.BaseUrl()
+                .AppendPathSegment("detect")
+                .PostAsync()
+                .ReceiveJson<IEnumerable<DetectLanguageResponse>>();
+            return detect.OrderByDescending(x => x.Confidence).Select(x => x.Language).FirstOrDefault();
+        }
+        finally
+        {
+            SlowDownRelease();
+        }
     }
 
     /// <summary>
@@ -39,14 +55,21 @@ public static class Extensions
     /// <returns>Translated text</returns>
     public static async Task<string> TranslateAsync(this string text, LanguageCode source, LanguageCode target)
     {
-        await SlowDown();
-        var translate = await text.BaseUrl()
-            .AppendPathSegment("translate")
-            .SetQueryParam("source", source)
-            .SetQueryParam("target", target)
-            .PostAsync()
-            .ReceiveJson<TranslateResponse>();
-        return translate.TranslatedText;
+        try
+        {
+            await SlowDown();
+            var translate = await text.BaseUrl()
+                .AppendPathSegment("translate")
+                .SetQueryParam("source", source)
+                .SetQueryParam("target", target)
+                .PostAsync()
+                .ReceiveJson<TranslateResponse>();
+            return translate.TranslatedText;
+        }
+        finally
+        {
+            SlowDownRelease();
+        }
     }
 
     /// <summary>
