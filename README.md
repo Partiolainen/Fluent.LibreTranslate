@@ -6,7 +6,7 @@
 `dotnet add package Fluent.LibreTranslate`
 ### Using
 ```csharp
-using LibreTranslate.Net;
+using Fluent.LibreTranslate;
 ```
 ### Usage
 ```csharp
