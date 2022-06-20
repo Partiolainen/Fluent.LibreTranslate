@@ -9,7 +9,7 @@ public class LibreTranslateServer
     private static readonly Dictionary<string, LibreTranslateServer> Instance = new();
     internal readonly string Url;
 
-    internal LibreTranslateServer(string url)
+    public LibreTranslateServer(string url)
     {
         Url = url;
         Instance[Url] = this;
