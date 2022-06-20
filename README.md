@@ -21,7 +21,7 @@ Hei, maailma!
 ```
 ### Custom LibreTranslate server URL:
 ```csharp
-GlobalLibreTranslateSettings.Server = "http://localhost:5000";
+GlobalLibreTranslateSettings.Server = new LibreTranslateServer("http://localhost:5000");
 ```
 ### Methods
 ```csharp
