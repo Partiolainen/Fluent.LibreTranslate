@@ -24,7 +24,7 @@ public static class Extensions
         if (GlobalLibreTranslateSettings.UseRateLimitControl)
             _ = Task.Run(async () =>
             {
-                await Task.Delay(4000);
+                await Task.Delay(GlobalLibreTranslateSettings.RateLimitTimeSpan);
                 GlobalLibreTranslateSettings.SlowDownLocker.Release();
             });
     }

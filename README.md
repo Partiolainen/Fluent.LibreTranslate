@@ -6,12 +6,14 @@
 `dotnet add package Fluent.LibreTranslate`
 ### Using
 ```csharp
-using LibreTranslate.Net;
+using Fluent.LibreTranslate;
 ```
 ### Usage
 ```csharp
 GlobalLibreTranslateSettings.Server = LibreTranslateServer.Libretranslate_de;
+GlobalLibreTranslateSettings.ApiKey = null; // if need an apiKey 
 GlobalLibreTranslateSettings.UseRateLimitControl = true; //to avoid "429 Too Many Requests" exception
+GlobalLibreTranslateSettings.RateLimitTimeSpan = TimeSpan.FromSeconds(4); //depends on server configuration, default 4 seconds
 
 Console.WriteLine(await "Hello, World!".TranslateAsync(LanguageCode.Finnish));
 ```
@@ -21,7 +23,7 @@ Hei, maailma!
 ```
 ### Custom LibreTranslate server URL:
 ```csharp
-GlobalLibreTranslateSettings.Server = "http://localhost:5000";
+GlobalLibreTranslateSettings.Server = new LibreTranslateServer("http://localhost:5000");
 ```
 ### Methods
 ```csharp

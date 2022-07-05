@@ -10,6 +10,7 @@ public class Tests
         GlobalLibreTranslateSettings.Server = LibreTranslateServer.Libretranslate_de;
         GlobalLibreTranslateSettings.ApiKey = null;
         GlobalLibreTranslateSettings.UseRateLimitControl = true;
+        GlobalLibreTranslateSettings.RateLimitTimeSpan = TimeSpan.FromSeconds(4);
     }
 
     private const string _englishText = "Hello World!";
@@ -18,21 +19,21 @@ public class Tests
     private const int _slowDownTestIterations = 20; //15 requests per minute
 
 
-    [Test]
+    [Test, Order(0)]
     public async Task TestDetectionAsync()
     {
         var language = await _englishText.DetectLanguageAsync();
         Assert.That(language, Is.EqualTo(LanguageCode.English));
     }
 
-    [Test]
+    [Test, Order(1)]
     public void TestDetection()
     {
         var language = _englishText.DetectLanguage();
         Assert.That(language, Is.EqualTo(LanguageCode.English));
     }
 
-    [Test]
+    [Test, Order(2)]
     public async Task TestTranslationAsync()
     {
         var translatedText = await _englishText.TranslateAsync(LanguageCode.AutoDetect, LanguageCode.Finnish);
@@ -40,7 +41,7 @@ public class Tests
         Assert.That(translatedText, Is.EqualTo(_finnishText));
     }
 
-    [Test]
+    [Test, Order(3)]
     public async Task TestAutoTranslationAsync()
     {
         var translatedText = await _englishText.TranslateAsync(LanguageCode.Finnish);
@@ -48,7 +49,7 @@ public class Tests
         Assert.That(translatedText, Is.EqualTo(_finnishText));
     }
 
-    [Test]
+    [Test, Order(4)]
     public void TestTranslation()
     {
         var translatedText = _englishText.Translate(LanguageCode.AutoDetect, LanguageCode.Finnish);
@@ -56,7 +57,7 @@ public class Tests
         Assert.That(translatedText, Is.EqualTo(_finnishText));
     }
 
-    [Test]
+    [Test, Order(5)]
     public void TestAutoTranslation()
     {
         var translatedText = _englishText.Translate(LanguageCode.Finnish);
@@ -64,7 +65,7 @@ public class Tests
         Assert.That(translatedText, Is.EqualTo(_finnishText));
     }
 
-    [Test]
+    [Test, Order(6)]
     public void TestTranslationException()
     {
         var exception = Assert.Throws<ArgumentException>(() => _englishText.Translate(_fooLanguage));
@@ -72,7 +73,7 @@ public class Tests
         Assert.That(exception.Message, Is.Not.Empty);
     }
 
-    [Test]
+    [Test, Order(7)]
     public async Task SlowDownTest()
     {
         var watch = Stopwatch.StartNew();
@@ -87,11 +88,11 @@ public class Tests
             watch.Stop();
             await TestContext.Progress.WriteLineAsync(
                 $"SlowDownTest progress: {(i + 1m) / _slowDownTestIterations:P0};" +
-                $" delay {delay / 1000m:f1}s; translation time: {watch.Elapsed.Milliseconds / 1000m:f2}");
+                $" delay {delay / 1000m:f1}s; translation time: {watch.Elapsed.TotalSeconds:f2}s");
         }
     }
 
-    [Test]
+    [Test, Order(8)]
     public void ParallelTest()
     {
         var taskList = new List<Action>();
@@ -101,11 +102,11 @@ public class Tests
             taskList.Add((() =>
             {
                 var watch = Stopwatch.StartNew();
-                TestContext.Progress.WriteLine($"Running instanse #{i1}");
+                TestContext.Progress.WriteLine($"Running instance #{i1}");
                 watch.Start();
                 TestAutoTranslation();
                 watch.Stop();
-                TestContext.Progress.WriteLine($"Instanse #{i1} completed after {watch.Elapsed.Seconds}s");
+                TestContext.Progress.WriteLine($"instance #{i1} completed after {watch.Elapsed.TotalSeconds:f2}s");
             }));
         }
 
