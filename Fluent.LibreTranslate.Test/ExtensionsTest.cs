@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Flurl.Http;
 
 namespace Fluent.LibreTranslate.Test;
 
@@ -99,7 +100,7 @@ public class Tests
         for (var i = 0; i < _slowDownTestIterations; i++)
         {
             var i1 = i;
-            taskList.Add((() =>
+            taskList.Add(() =>
             {
                 var watch = Stopwatch.StartNew();
                 TestContext.Progress.WriteLine($"Running instance #{i1}");
@@ -107,9 +108,16 @@ public class Tests
                 TestAutoTranslation();
                 watch.Stop();
                 TestContext.Progress.WriteLine($"instance #{i1} completed after {watch.Elapsed.TotalSeconds:f2}s");
-            }));
+            });
         }
 
         Parallel.Invoke(new ParallelOptions { MaxDegreeOfParallelism = _slowDownTestIterations }, taskList.ToArray());
+    }
+
+    [Test, Order(9)]
+    public void SuggestTest()
+    {
+        Assert.Throws<FlurlHttpException>(() =>
+            _englishText.Suggest(_finnishText, LanguageCode.English, LanguageCode.Finnish));
     }
 }
