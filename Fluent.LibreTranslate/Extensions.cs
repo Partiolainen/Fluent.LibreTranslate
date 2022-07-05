@@ -29,6 +29,11 @@ public static class Extensions
             });
     }
 
+    /// <summary>
+    /// Detects the text language
+    /// </summary>
+    /// <param name="text">Text to detect</param>
+    /// <returns>Translated text</returns>
     public static async Task<LanguageCode> DetectLanguageAsync(this string text)
     {
         try
@@ -73,7 +78,7 @@ public static class Extensions
     }
 
     /// <summary>
-    /// Translates the text from one language to another
+    /// Translates the text from one language to another with source language detection 
     /// </summary>
     /// <param name="text">Text to translate</param>
     /// <param name="target">Target language</param>
@@ -81,11 +86,29 @@ public static class Extensions
     public static async Task<string> TranslateAsync(this string text, LanguageCode target) =>
         await text.TranslateAsync(LanguageCode.AutoDetect, target);
 
+    /// <summary>
+    /// Detects the text language
+    /// </summary>
+    /// <param name="text">Text to detect</param>
+    /// <returns>Translated text</returns>
     public static LanguageCode DetectLanguage(this string text) => AsyncHelper.RunSync(() => DetectLanguageAsync(text));
 
+    /// <summary>
+    /// Translates the text from one language to another
+    /// </summary>
+    /// <param name="text">Text to translate</param>
+    /// <param name="source">Source language</param>
+    /// <param name="target">Target language</param>
+    /// <returns>Translated text</returns>
     public static string Translate(this string text, LanguageCode source, LanguageCode target) =>
         AsyncHelper.RunSync(() => TranslateAsync(text, source, target));
 
+    /// <summary>
+    /// Translates the text from one language to another with source language detection 
+    /// </summary>
+    /// <param name="text">Text to translate</param>
+    /// <param name="target">Target language</param>
+    /// <returns>Translated text</returns>
     public static string Translate(this string text, LanguageCode target) =>
         AsyncHelper.RunSync(() => TranslateAsync(text, target));
 }
