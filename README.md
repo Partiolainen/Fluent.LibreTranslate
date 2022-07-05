@@ -30,8 +30,10 @@ GlobalLibreTranslateSettings.Server = new LibreTranslateServer("http://localhost
 Task<LanguageCode> DetectLanguageAsync(this string text);
 Task<string> TranslateAsync(this string text, LanguageCode source, LanguageCode target);
 Task<string> TranslateAsync(this string text, LanguageCode target);
+Task SuggestAsync(this string text, string suggestedTranslation, LanguageCode source, LanguageCode target);
 
 LanguageCode DetectLanguage(this string text);
 string Translate(this string text, LanguageCode source, LanguageCode target);
 string Translate(this string text, LanguageCode target);
+Suggest(this string text, string suggestedTranslation, LanguageCode source, LanguageCode target);
 ```
