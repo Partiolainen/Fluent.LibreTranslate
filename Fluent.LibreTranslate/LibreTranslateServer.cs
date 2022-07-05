@@ -15,28 +15,18 @@ public class LibreTranslateServer
         Instance[Url] = this;
     }
 
-    public static implicit operator LibreTranslateServer(string str)
-    {
-        return FromString(str);
-    }
+    public static implicit operator LibreTranslateServer(string str) => FromString(str);
 
     public static LibreTranslateServer FromString(string str)
     {
         if (Instance.TryGetValue(str, out var result))
-        {
             return result;
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"{nameof(LibreTranslateServer)} must be one of the followings {string.Join(", ", Instance.Select(x => x.Key))}");
-        }
+
+        throw new ArgumentException(
+            $"{nameof(LibreTranslateServer)} must be one of the followings {string.Join(", ", Instance.Select(x => x.Key))}");
     }
 
-    public override string ToString()
-    {
-        return $"{Url}";
-    }
+    public override string ToString() => $"{Url}";
 
     //mirrors source: https://github.com/LibreTranslate/LibreTranslate#mirrors
     public static LibreTranslateServer Libretranslate_com => new("https://libretranslate.com/");

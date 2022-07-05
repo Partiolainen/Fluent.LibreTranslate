@@ -23,20 +23,13 @@ public class LanguageCode
     public static LanguageCode FromString(string str)
     {
         if (Instance.TryGetValue(str, out var result))
-        {
             return result;
-        }
-        else
-        {
-            throw new ArgumentException(
-                $"{nameof(LanguageCode)} must be one of the followings {string.Join(", ", Instance.Select(x => x.Value.Code))}");
-        }
+
+        throw new ArgumentException(
+            $"{nameof(LanguageCode)} must be one of the followings {string.Join(", ", Instance.Select(x => x.Value.Code))}");
     }
 
-    public override string ToString()
-    {
-        return $"{Code}";
-    }
+    public override string ToString() => $"{Code}";
 
     public static readonly LanguageCode English = new("en");
     public static readonly LanguageCode Arabic = new("ar");
