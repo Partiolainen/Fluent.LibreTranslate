@@ -93,6 +93,33 @@ public static class Extensions
     /// <returns>Translated text</returns>
     public static LanguageCode DetectLanguage(this string text) => AsyncHelper.RunSync(() => DetectLanguageAsync(text));
 
+
+    /// <summary>
+    /// Submit a suggestion to improve a translation
+    /// </summary>
+    /// <param name="text">Original text</param>
+    /// <param name="suggestedTranslation">Suggested translation</param>
+    /// <param name="source">Language of original text</param>
+    /// <param name="target">Language of suggested translation</param>
+    public static async Task SuggestAsync(this string text, string suggestedTranslation, LanguageCode source,
+        LanguageCode target)
+    {
+        try
+        {
+            await SlowDown();
+            await text.BaseUrl()
+                .AppendPathSegment("suggest")
+                .SetQueryParam("s", suggestedTranslation)
+                .SetQueryParam("source", source)
+                .SetQueryParam("target", target)
+                .PostAsync();
+        }
+        finally
+        {
+            SlowDownRelease();
+        }
+    }
+
     /// <summary>
     /// Translates the text from one language to another
     /// </summary>
@@ -111,4 +138,14 @@ public static class Extensions
     /// <returns>Translated text</returns>
     public static string Translate(this string text, LanguageCode target) =>
         AsyncHelper.RunSync(() => TranslateAsync(text, target));
+
+    /// <summary>
+    /// Submit a suggestion to improve a translation
+    /// </summary>
+    /// <param name="text">Original text</param>
+    /// <param name="suggestedTranslation">Suggested translation</param>
+    /// <param name="source">Language of original text</param>
+    /// <param name="target">Language of suggested translation</param>
+    public static void Suggest(this string text, string suggestedTranslation, LanguageCode source, LanguageCode target) =>
+        AsyncHelper.RunSync(() => SuggestAsync(text, suggestedTranslation, source, target));
 }
